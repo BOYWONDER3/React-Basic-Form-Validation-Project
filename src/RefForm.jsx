@@ -1,16 +1,17 @@
 import { useState, useRef } from "react";
 import { checkEmail, checkPassword } from "./validators";
 
-
-export function RefForm () {
-   const emailRef = useRef()
-   const passwordRef = useRef()
+export function RefForm() {
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
   const [emailErrors, setEmailErrors] = useState([]);
   const [passwordErrors, setPasswordErrors] = useState([]);
+  const [isAfterFirstSubmit, setIsAfterFirstSubmit] = useState(false);
 
   function onSubmit(e) {
     e.preventDefault();
+    setIsAfterFirstSubmit(true);
 
     const emailResults = checkEmail(emailRef.current.value);
     const passwordResults = checkPassword(passwordRef.current.value);
@@ -19,7 +20,7 @@ export function RefForm () {
     setPasswordErrors(passwordResults);
 
     if (emailResults.length === 0 && passwordResults.length === 0) {
-        alert('success')
+      alert("success");
     }
   }
 
@@ -30,6 +31,10 @@ export function RefForm () {
           Email
         </label>
         <input
+          onChange={
+            isAfterFirstSubmit ?
+            ((e) => setEmailErrors(checkEmail(e.target.value))) : undefined 
+          }
           class="input"
           type="email"
           id="email"
@@ -44,6 +49,10 @@ export function RefForm () {
           Password
         </label>
         <input
+          onChange={
+            isAfterFirstSubmit ?
+            ((e) => setPasswordErrors(checkPassword(e.target.value))) : undefined
+          }
           class="input"
           ref={passwordRef}
           type="password"
